@@ -11,6 +11,7 @@ builder.Services.AddDbContext<LibraryContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
 //builder.Services.AddControllersWithViews();
 //IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 //builder.Services.AddDbContext<LibraryContext>(option =>
