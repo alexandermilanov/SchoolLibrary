@@ -19,9 +19,12 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 
+// махни .AddRoles<IdentityRole>():
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<LibraryContext>();
+    .AddRoles<IdentityRole>().AddEntityFrameworkStores<LibraryContext>();
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 

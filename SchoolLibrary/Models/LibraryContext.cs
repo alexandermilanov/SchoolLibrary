@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SchoolLibrary.Models
 {
-    public partial class LibraryContext : DbContext
+    public partial class LibraryContext : IdentityDbContext
     {
         public LibraryContext()
         {
