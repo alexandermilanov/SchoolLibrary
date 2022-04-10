@@ -22,7 +22,7 @@ namespace SchoolLibrary.Controllers
         // GET: LoanedBooks
         public async Task<IActionResult> Index()
         {
-            var libraryContext = _context.LoanedBooks.Include(l => l.Book).Include(l => l.User);
+            var libraryContext = _context.LoanedBooks.Include(l => l.Book);
             return View(await libraryContext.ToListAsync());
         }
 
@@ -36,7 +36,6 @@ namespace SchoolLibrary.Controllers
 
             var loanedBook = await _context.LoanedBooks
                 .Include(l => l.Book)
-                .Include(l => l.User)
                 .FirstOrDefaultAsync(m => m.LoanedBookId == id);
             if (loanedBook == null)
             {
@@ -50,7 +49,6 @@ namespace SchoolLibrary.Controllers
         public IActionResult Create()
         {
             ViewData["BookId"] = new SelectList(_context.Books, "BookId", "BookId");
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId");
             return View();
         }
 
@@ -68,7 +66,6 @@ namespace SchoolLibrary.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookId"] = new SelectList(_context.Books, "BookId", "BookId", loanedBook.BookId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", loanedBook.UserId);
             return View(loanedBook);
         }
 
@@ -86,7 +83,6 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
             ViewData["BookId"] = new SelectList(_context.Books, "BookId", "BookId", loanedBook.BookId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", loanedBook.UserId);
             return View(loanedBook);
         }
 
@@ -123,7 +119,6 @@ namespace SchoolLibrary.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookId"] = new SelectList(_context.Books, "BookId", "BookId", loanedBook.BookId);
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", loanedBook.UserId);
             return View(loanedBook);
         }
 
@@ -137,7 +132,6 @@ namespace SchoolLibrary.Controllers
 
             var loanedBook = await _context.LoanedBooks
                 .Include(l => l.Book)
-                .Include(l => l.User)
                 .FirstOrDefaultAsync(m => m.LoanedBookId == id);
             if (loanedBook == null)
             {

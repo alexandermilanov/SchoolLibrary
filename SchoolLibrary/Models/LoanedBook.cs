@@ -7,10 +7,9 @@ namespace SchoolLibrary.Models
     {
         public int LoanedBookId { get; set; }
         public int BookId { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; } = null!;
         public DateTime DateLoaned { get; set; }
 
         public virtual Book Book { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
     }
 }

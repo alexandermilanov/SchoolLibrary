@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
 using SchoolLibrary.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace SchoolLibrary.Controllers

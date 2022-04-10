@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SchoolLibrary.Models
 {
-    public partial class LibraryContext : IdentityDbContext
+    public partial class LibraryContext : DbContext
     {
         public LibraryContext()
         {
@@ -21,13 +20,13 @@ namespace SchoolLibrary.Models
         public virtual DbSet<Book> Books { get; set; } = null!;
         public virtual DbSet<Genre> Genres { get; set; } = null!;
         public virtual DbSet<LoanedBook> LoanedBooks { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-ANV0UB4; Initial Catalog=Library; User ID=sa; Password=0123456789;");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=DESKTOP-ANV0UB4; Database=Library; User ID=sa; Password=0123456789; Trusted_Connection=True; MultipleActiveResultSets=true");
             }
         }
 
@@ -68,28 +67,13 @@ namespace SchoolLibrary.Models
             {
                 entity.Property(e => e.DateLoaned).HasColumnType("date");
 
+                entity.Property(e => e.UserId).HasMaxLength(450);
+
                 entity.HasOne(d => d.Book)
                     .WithMany(p => p.LoanedBooks)
                     .HasForeignKey(d => d.BookId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Book");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.LoanedBooks)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_User");
-            });
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.Property(e => e.EmailAddress).HasMaxLength(200);
-
-                entity.Property(e => e.FirstName).HasMaxLength(200);
-
-                entity.Property(e => e.LastName).HasMaxLength(200);
-
-                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);
