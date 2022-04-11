@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using SchoolLibrary.Core;
+using System.Linq;
 
 namespace SchoolLibrary.Controllers
 {

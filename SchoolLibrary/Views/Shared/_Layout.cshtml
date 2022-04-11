@@ -9,7 +9,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - SchoolLibrary</title>
+	<title>School Library Project</title>
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/SchoolLibrary.styles.css" asp-append-version="true" />
@@ -49,24 +49,31 @@
 
 							@if (User.IsInRole("Administrator"))
 							{
-								<li class="nav-item">
-									<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Books Database</a>
+								<li class="dropdown">
+									<button class="nav-link text-dark" style="background-color:transparent; border:none; outline:none">Books Database</button>
+									<div class="dropdown-content">
+										<a class="nav-link text-dark" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
+										<a class="nav-link text-dark" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a>
+										<a class="nav-link text-dark" asp-area="" asp-controller="Publishers" asp-action="Index">Publishers</a>
+										<a class="nav-link text-dark" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
+										<a class="nav-link text-dark" asp-area="" asp-controller="Conditions" asp-action="Index">Conditions</a>
+									</div>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Registered Platform Users</a>
+									<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Registered Users</a>
 								</li>
 							}
-							else
+							@*else
 							{
 								<li class="nav-item">
 									<a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Book Catalogue</a>
 								</li>
-							}
-						}					
+							}*@
+						}
 
 						@*<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-						</li>*@
+							</li>*@
 					</ul>
 				</div>
 				<partial name="_LoginPartial" />

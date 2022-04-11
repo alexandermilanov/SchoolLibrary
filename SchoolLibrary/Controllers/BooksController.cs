@@ -22,7 +22,7 @@ namespace SchoolLibrary.Controllers
         // GET: Books
         public async Task<IActionResult> Index()
         {
-            var libraryContext = _context.Books.Include(b => b.Author).Include(b => b.Genre);
+            var libraryContext = _context.Books.Include(b => b.Author).Include(b => b.Condition).Include(b => b.Genre).Include(b => b.Publisher);
             return View(await libraryContext.ToListAsync());
         }
 
@@ -36,8 +36,10 @@ namespace SchoolLibrary.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Author)
+                .Include(b => b.Condition)
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.BookId == id);
+                .Include(b => b.Publisher)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
                 return NotFound();
@@ -49,8 +51,10 @@ namespace SchoolLibrary.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", "AuthorId");
-            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreId");
+            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name");
+            ViewData["ConditionId"] = new SelectList(_context.Conditions, "Id", "BookCondition");
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name");
+            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Name");
             return View();
         }
 
@@ -59,7 +63,7 @@ namespace SchoolLibrary.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookId,Title,AuthorId,PublicationDate,GenreId")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId")] Book book)
         {
             if (ModelState.IsValid)
             {
@@ -67,8 +71,10 @@ namespace SchoolLibrary.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", "AuthorId", book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreId", book.GenreId);
+            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
+            ViewData["ConditionId"] = new SelectList(_context.Conditions, "Id", "BookCondition", book.ConditionId);
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", book.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Name", book.PublisherId);
             return View(book);
         }
 
@@ -85,8 +91,10 @@ namespace SchoolLibrary.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", "AuthorId", book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreId", book.GenreId);
+            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
+            ViewData["ConditionId"] = new SelectList(_context.Conditions, "Id", "BookCondition", book.ConditionId);
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", book.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Name", book.PublisherId);
             return View(book);
         }
 
@@ -95,9 +103,9 @@ namespace SchoolLibrary.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookId,Title,AuthorId,PublicationDate,GenreId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId")] Book book)
         {
-            if (id != book.BookId)
+            if (id != book.Id)
             {
                 return NotFound();
             }
@@ -111,7 +119,7 @@ namespace SchoolLibrary.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.BookId))
+                    if (!BookExists(book.Id))
                     {
                         return NotFound();
                     }
@@ -122,8 +130,10 @@ namespace SchoolLibrary.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "AuthorId", "AuthorId", book.AuthorId);
-            ViewData["GenreId"] = new SelectList(_context.Genres, "GenreId", "GenreId", book.GenreId);
+            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
+            ViewData["ConditionId"] = new SelectList(_context.Conditions, "Id", "BookCondition", book.ConditionId);
+            ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", book.GenreId);
+            ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Name", book.PublisherId);
             return View(book);
         }
 
@@ -137,8 +147,10 @@ namespace SchoolLibrary.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Author)
+                .Include(b => b.Condition)
                 .Include(b => b.Genre)
-                .FirstOrDefaultAsync(m => m.BookId == id);
+                .Include(b => b.Publisher)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)
             {
                 return NotFound();
@@ -160,7 +172,7 @@ namespace SchoolLibrary.Controllers
 
         private bool BookExists(int id)
         {
-            return _context.Books.Any(e => e.BookId == id);
+            return _context.Books.Any(e => e.Id == id);
         }
     }
 }

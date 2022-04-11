@@ -10,22 +10,22 @@ using SchoolLibrary.Models;
 
 namespace SchoolLibrary.Controllers
 {
-    public class AuthorsController : Controller
+    public class ConditionsController : Controller
     {
         private readonly LibraryContext _context;
 
-        public AuthorsController(LibraryContext context)
+        public ConditionsController(LibraryContext context)
         {
             _context = context;
         }
 
-        // GET: Authors
+        // GET: Conditions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Authors.ToListAsync());
+            return View(await _context.Conditions.ToListAsync());
         }
 
-        // GET: Authors/Details/5
+        // GET: Conditions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Authors
+            var condition = await _context.Conditions
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (author == null)
+            if (condition == null)
             {
                 return NotFound();
             }
 
-            return View(author);
+            return View(condition);
         }
 
-        // GET: Authors/Create
+        // GET: Conditions/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Authors/Create
+        // POST: Conditions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Author author)
+        public async Task<IActionResult> Create([Bind("Id,BookCondition")] Condition condition)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(author);
+                _context.Add(condition);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            return View(condition);
         }
 
-        // GET: Authors/Edit/5
+        // GET: Conditions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null)
+            var condition = await _context.Conditions.FindAsync(id);
+            if (condition == null)
             {
                 return NotFound();
             }
-            return View(author);
+            return View(condition);
         }
 
-        // POST: Authors/Edit/5
+        // POST: Conditions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Author author)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BookCondition")] Condition condition)
         {
-            if (id != author.Id)
+            if (id != condition.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace SchoolLibrary.Controllers
             {
                 try
                 {
-                    _context.Update(author);
+                    _context.Update(condition);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AuthorExists(author.Id))
+                    if (!ConditionExists(condition.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace SchoolLibrary.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            return View(condition);
         }
 
-        // GET: Authors/Delete/5
+        // GET: Conditions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Authors
+            var condition = await _context.Conditions
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (author == null)
+            if (condition == null)
             {
                 return NotFound();
             }
 
-            return View(author);
+            return View(condition);
         }
 
-        // POST: Authors/Delete/5
+        // POST: Conditions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-            _context.Authors.Remove(author);
+            var condition = await _context.Conditions.FindAsync(id);
+            _context.Conditions.Remove(condition);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AuthorExists(int id)
+        private bool ConditionExists(int id)
         {
-            return _context.Authors.Any(e => e.Id == id);
+            return _context.Conditions.Any(e => e.Id == id);
         }
     }
 }
