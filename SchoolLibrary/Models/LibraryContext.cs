@@ -18,14 +18,14 @@ namespace SchoolLibrary.Models
 
         public virtual DbSet<Author> Authors { get; set; } = null!;
         public virtual DbSet<Book> Books { get; set; } = null!;
+        public virtual DbSet<Condition> Conditions { get; set; } = null!;
         public virtual DbSet<Genre> Genres { get; set; } = null!;
-        public virtual DbSet<LoanedBook> LoanedBooks { get; set; } = null!;
+        public virtual DbSet<Publisher> Publishers { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=DESKTOP-ANV0UB4; Database=Library; User ID=sa; Password=0123456789; Trusted_Connection=True; MultipleActiveResultSets=true");
             }
         }
@@ -34,46 +34,53 @@ namespace SchoolLibrary.Models
         {
             modelBuilder.Entity<Author>(entity =>
             {
-                entity.Property(e => e.FirstName).HasMaxLength(200);
+                entity.Property(e => e.Name).HasMaxLength(255);
 
-                entity.Property(e => e.LastName).HasMaxLength(200);
+                //entity.Property(e => e.LastName).HasMaxLength(255);
             });
 
             modelBuilder.Entity<Book>(entity =>
             {
-                entity.Property(e => e.PublicationDate).HasColumnType("date");
-
-                entity.Property(e => e.Title).HasMaxLength(200);
+                entity.Property(e => e.Title).HasMaxLength(255);
 
                 entity.HasOne(d => d.Author)
                     .WithMany(p => p.Books)
                     .HasForeignKey(d => d.AuthorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Author");
+                    .HasConstraintName("FK_Authors");
+
+                entity.HasOne(d => d.Condition)
+                    .WithMany(p => p.Books)
+                    .HasForeignKey(d => d.ConditionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Conditions");
 
                 entity.HasOne(d => d.Genre)
                     .WithMany(p => p.Books)
                     .HasForeignKey(d => d.GenreId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Genre");
+                    .HasConstraintName("FK_Genres");
+
+                entity.HasOne(d => d.Publisher)
+                    .WithMany(p => p.Books)
+                    .HasForeignKey(d => d.PublisherId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Publishers");
+            });
+
+            modelBuilder.Entity<Condition>(entity =>
+            {
+                entity.Property(e => e.BookCondition).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Genre>(entity =>
             {
-                entity.Property(e => e.GenreName).HasMaxLength(200);
+                entity.Property(e => e.Name).HasMaxLength(255);
             });
 
-            modelBuilder.Entity<LoanedBook>(entity =>
+            modelBuilder.Entity<Publisher>(entity =>
             {
-                entity.Property(e => e.DateLoaned).HasColumnType("date");
-
-                entity.Property(e => e.UserId).HasMaxLength(450);
-
-                entity.HasOne(d => d.Book)
-                    .WithMany(p => p.LoanedBooks)
-                    .HasForeignKey(d => d.BookId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Book");
+                entity.Property(e => e.Name).HasMaxLength(255);
             });
 
             OnModelCreatingPartial(modelBuilder);
