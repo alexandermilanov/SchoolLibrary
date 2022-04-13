@@ -43,6 +43,18 @@ namespace SchoolLibrary.Controllers
             return View(author);
         }
 
+        private string FormatString(string s)
+        {
+            s = s.Replace('\t', ' ');
+            s = s.Trim();
+
+            while (s.Contains("  "))
+            {
+                s = s.Replace("  ", " ");
+            }
+            return s;
+        }
+
         // GET: Authors/Create
         public IActionResult Create()
         {
@@ -56,13 +68,31 @@ namespace SchoolLibrary.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Author author)
         {
-            if (ModelState.IsValid)
+            bool itemExists = false;
+
+            foreach (var record in _context.Authors)
             {
-                _context.Add(author);
-                await _context.SaveChangesAsync();
+                if (FormatString(record.Name).ToUpper() == FormatString(author.Name).ToUpper())
+                {
+                    itemExists = true;
+                    break;
+                }
+            }
+
+            if (itemExists == false)
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(author);
+                    await _context.SaveChangesAsync();                    
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            else
+            {
+                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Authors/Edit/5
@@ -93,27 +123,47 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            bool itemExists = false;
+
+            foreach (var record in _context.Authors)
             {
-                try
+                if (FormatString(record.Name).ToUpper() == FormatString(author.Name).ToUpper())
                 {
-                    _context.Update(author);
-                    await _context.SaveChangesAsync();
+                    itemExists = true;
+                    break;
                 }
-                catch (DbUpdateConcurrencyException)
+            }
+
+            if (itemExists == false)
+            {
+                if (ModelState.IsValid)
                 {
-                    if (!AuthorExists(author.Id))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(author);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!AuthorExists(author.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
-                }
+                                    }
+                //return RedirectToAction(nameof(Index));
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            else
+            {
+                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Authors/Delete/5

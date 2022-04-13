@@ -49,6 +49,18 @@ namespace SchoolLibrary.Controllers
             return View();
         }
 
+        private string FormatString(string s)
+        {
+            s = s.Replace('\t', ' ');
+            s = s.Trim();
+
+            while (s.Contains("  "))
+            {
+                s = s.Replace("  ", " ");
+            }
+            return s;
+        }
+
         // POST: Publishers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -56,13 +68,31 @@ namespace SchoolLibrary.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Publisher publisher)
         {
-            if (ModelState.IsValid)
+            bool itemExists = false;
+
+            foreach (var record in _context.Publishers)
             {
-                _context.Add(publisher);
-                await _context.SaveChangesAsync();
+                if (FormatString(record.Name).ToUpper() == FormatString(publisher.Name).ToUpper())
+                {
+                    itemExists = true;
+                    break;
+                }
+            }
+
+            if (itemExists == false)
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(publisher);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(publisher);
+            else
+            {
+                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Publishers/Edit/5
@@ -93,27 +123,47 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            bool itemExists = false;
+
+            foreach (var record in _context.Authors)
             {
-                try
+                if (FormatString(record.Name).ToUpper() == FormatString(publisher.Name).ToUpper())
                 {
-                    _context.Update(publisher);
-                    await _context.SaveChangesAsync();
+                    itemExists = true;
+                    break;
                 }
-                catch (DbUpdateConcurrencyException)
+            }
+
+            if (itemExists == false)
+            {
+                if (ModelState.IsValid)
                 {
-                    if (!PublisherExists(publisher.Id))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(publisher);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!PublisherExists(publisher.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
+                //return RedirectToAction(nameof(Index));
                 return RedirectToAction(nameof(Index));
             }
-            return View(publisher);
+            else
+            {
+                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Publishers/Delete/5

@@ -152,36 +152,40 @@ namespace SchoolLibrary.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId")] Book book)
         {
-            bool itemExists = false;
+            _context.Update(book);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
 
-            foreach (var record in _context.Books)
-            {
-                if (record.AuthorId == book.AuthorId &&
-                    FormatString(record.Title.ToUpper()) == FormatString(book.Title.ToUpper()) &&
-                    record.PublisherId == book.PublisherId &&
-                    record.Year == book.Year &&
-                    record.GenreId == book.GenreId &&
-                    record.ConditionId == book.ConditionId)
-                {
-                    itemExists = true;
-                    break;
-                }
-            }
+            //bool itemExists = false;
 
-            if (itemExists == false)
-            {
-                _context.Update(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
-                return RedirectToAction(nameof(Index));
-            }
+            //foreach (var record in _context.Books)
+            //{
+            //    if (record.AuthorId == book.AuthorId &&
+            //        FormatString(record.Title.ToUpper()) == FormatString(book.Title.ToUpper()) &&
+            //        record.PublisherId == book.PublisherId &&
+            //        record.Year == book.Year &&
+            //        record.GenreId == book.GenreId &&
+            //        record.ConditionId == book.ConditionId)
+            //    {
+            //        itemExists = true;
+            //        break;
+            //    }
+            //}
+
+            //if (itemExists == false)
+            //{
+            //    _context.Update(book);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //else
+            //{
+            //    //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+            //    return RedirectToAction(nameof(Index));
+            //}
 
 
-           
+
 
             //if (id != book.Id)
             //{

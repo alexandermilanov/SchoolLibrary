@@ -43,6 +43,18 @@ namespace SchoolLibrary.Controllers
             return View(condition);
         }
 
+        private string FormatString(string s)
+        {
+            s = s.Replace('\t', ' ');
+            s = s.Trim();
+
+            while (s.Contains("  "))
+            {
+                s = s.Replace("  ", " ");
+            }
+            return s;
+        }
+
         // GET: Conditions/Create
         public IActionResult Create()
         {
@@ -56,13 +68,31 @@ namespace SchoolLibrary.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,BookCondition")] Condition condition)
         {
-            if (ModelState.IsValid)
+            bool itemExists = false;
+
+            foreach (var record in _context.Conditions)
             {
-                _context.Add(condition);
-                await _context.SaveChangesAsync();
+                if (FormatString(record.BookCondition).ToUpper() == FormatString(condition.BookCondition).ToUpper())
+                {
+                    itemExists = true;
+                    break;
+                }
+            }
+
+            if (itemExists == false)
+            {
+                if (ModelState.IsValid)
+                {
+                    _context.Add(condition);
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(condition);
+            else
+            {
+                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Conditions/Edit/5
@@ -93,27 +123,47 @@ namespace SchoolLibrary.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            bool itemExists = false;
+
+            foreach (var record in _context.Conditions)
             {
-                try
+                if (FormatString(condition.BookCondition).ToUpper() == FormatString(condition.BookCondition).ToUpper())
                 {
-                    _context.Update(condition);
-                    await _context.SaveChangesAsync();
+                    itemExists = true;
+                    break;
                 }
-                catch (DbUpdateConcurrencyException)
+            }
+
+            if (itemExists == false)
+            {
+                if (ModelState.IsValid)
                 {
-                    if (!ConditionExists(condition.Id))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(condition);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!ConditionExists(condition.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
+                //return RedirectToAction(nameof(Index));
                 return RedirectToAction(nameof(Index));
             }
-            return View(condition);
+            else
+            {
+                //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Conditions/Delete/5
