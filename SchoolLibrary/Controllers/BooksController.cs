@@ -152,71 +152,18 @@ namespace SchoolLibrary.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId")] Book book)
         {
-            _context.Update(book);
-            await _context.SaveChangesAsync();
+            if (!_context.Books.Any(
+                e => e.Title == book.Title &&
+                e.AuthorId == book.AuthorId &&
+                e.PublisherId == book.PublisherId &&
+                e.Year == book.Year &&
+                e.GenreId == book.GenreId &&
+                e.ConditionId == book.ConditionId))
+            {
+                _context.Update(book);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
-
-            //bool itemExists = false;
-
-            //foreach (var record in _context.Books)
-            //{
-            //    if (record.AuthorId == book.AuthorId &&
-            //        FormatString(record.Title.ToUpper()) == FormatString(book.Title.ToUpper()) &&
-            //        record.PublisherId == book.PublisherId &&
-            //        record.Year == book.Year &&
-            //        record.GenreId == book.GenreId &&
-            //        record.ConditionId == book.ConditionId)
-            //    {
-            //        itemExists = true;
-            //        break;
-            //    }
-            //}
-
-            //if (itemExists == false)
-            //{
-            //    _context.Update(book);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //else
-            //{
-            //    //ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Record Inserted Successfully')", true);
-            //    return RedirectToAction(nameof(Index));
-            //}
-
-
-
-
-            //if (id != book.Id)
-            //{
-            //    return NotFound();
-            //}
-
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(book);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!BookExists(book.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", book.AuthorId);
-            //ViewData["ConditionId"] = new SelectList(_context.Conditions, "Id", "BookCondition", book.ConditionId);
-            //ViewData["GenreId"] = new SelectList(_context.Genres, "Id", "Name", book.GenreId);
-            //ViewData["PublisherId"] = new SelectList(_context.Publishers, "Id", "Name", book.PublisherId);
-            //return View(book);
         }
 
         // GET: Books/Delete/5
