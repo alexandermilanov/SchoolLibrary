@@ -18,7 +18,7 @@
 	@if (User.IsInRole("Administrator"))
 	{
 		<p>
-			<a asp-action="Create">Create New</a>
+			<a asp-action="Create">Create New Book</a>
 		</p>
 	}
 }
@@ -51,7 +51,7 @@
 			</th>
 			<th>
 				@*@Html.DisplayNameFor(model => model.Condition)*@
-				Condition
+				Book Condition
 			</th>
 			<th></th>
 		</tr>

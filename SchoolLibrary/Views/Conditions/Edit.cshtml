@@ -5,9 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Edit Condition</h1>
 
-<h4>Condition</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="BookCondition" class="control-label"></label>
+                <label asp-for="BookCondition" class="control-label">Book Condition</label>
                 <input asp-for="BookCondition" class="form-control" />
                 <span asp-validation-for="BookCondition" class="text-danger"></span>
             </div>
