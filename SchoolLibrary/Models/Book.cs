@@ -12,6 +12,7 @@ namespace SchoolLibrary.Models
         public int Year { get; set; }
         public int GenreId { get; set; }
         public int ConditionId { get; set; }
+        public string CoverPicture { get; set; } = null!;
 
         public virtual Author Author { get; set; } = null!;
         public virtual Condition Condition { get; set; } = null!;

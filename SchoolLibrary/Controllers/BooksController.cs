@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SchoolLibrary.Core;
 using SchoolLibrary.Models;
 //using System.Web.UI;
 
@@ -76,7 +78,7 @@ namespace SchoolLibrary.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId,CoverPicture")] Book book)
         {
             bool itemExists = false;
 
@@ -93,6 +95,16 @@ namespace SchoolLibrary.Controllers
                     break;
                 }
             }
+
+            if (book.Year < 0 || book.Year > DateTime.Today.Year)
+            {
+                itemExists = true;
+            }
+
+			if (string.IsNullOrWhiteSpace(book.CoverPicture))
+			{
+                book.CoverPicture = "Images/DefaultCover.png";
+			}
 
             if (itemExists == false)
             {
@@ -150,15 +162,26 @@ namespace SchoolLibrary.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,AuthorId,PublisherId,Year,GenreId,ConditionId,CoverPicture")] Book book)
         {
-            if (!_context.Books.Any(
+            var proceed = true;
+
+            if (_context.Books.Any(
                 e => e.Title == book.Title &&
                 e.AuthorId == book.AuthorId &&
                 e.PublisherId == book.PublisherId &&
                 e.Year == book.Year &&
                 e.GenreId == book.GenreId &&
-                e.ConditionId == book.ConditionId))
+                e.ConditionId == book.ConditionId &&
+                e.CoverPicture == book.CoverPicture))
+            {
+                proceed = false;
+            }
+            if (book.Year < 0 || book.Year > DateTime.Today.Year)
+            {
+                proceed = false;
+            }
+            if (proceed == true)
             {
                 _context.Update(book);
                 await _context.SaveChangesAsync();
